@@ -40,6 +40,10 @@ define(function(){
 
                 "page=b": {
                     "block": {
+                        "footer": {
+                            "tpl": "home/b/footer",
+                            "css": ["home/b/footer_css"]
+                        },
                         "home-main": {
                             "tpl": "home/b/b_tpl",
                             "handler": {

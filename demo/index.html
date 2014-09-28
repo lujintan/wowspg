@@ -1,37 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Wow Spg Demo</title>
-	<link rel="stylesheet" type="text/css" href="./index.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Wow Spg Demo</title>
+    <link rel="stylesheet" type="text/css" href="./index.css">
 </head>
 <body>
 
-	<header id="gHeader" class="g-hd">
-		<ul class="nav-bar clearfix">
-			<li class="n-i">
-				<a href="?module=index&page=a">ModuleIndex</a>
-			</li>
-			<li class="n-i">
-				<a href="?module=home&page=a">ModuleHome</a>
-			</li>
-		</ul>
-	</header>
+    <header id="gHeader" class="g-hd"></header>
 
-	<section id="gMain" class="g-ma"></section>
-	
-	<footer id="gFooter" class="g-ft">
-		<div class="footer-bar">
-			This is the wowspg Footer!!
-		</div>
-	</footer>
-	
-	<script type="text/javascript" src="../src/libs/require.js" data-main="./main"></script>
-	<script type="text/javascript" src="../src/libs/jquery-1.10.1.js"></script>
-	<script type="text/javascript" src="../src/libs/dust-core.js"></script>
-	<script type="text/javascript" src="../src/libs/dust-helpers.js"></script>
-	<script type="text/javascript" src="../src/libs/css.js"></script>
-	<script type="text/javascript" src="../src/wow.base.define.js"></script>
+    <section id="gMain" class="g-ma"></section>
+    
+    <footer id="gFooter" class="g-ft"></footer>
+    
+    <script type="text/javascript" src="../src/libs/require.js" data-main="./main"></script>
+    <script type="text/javascript" src="../src/libs/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="../src/libs/dust-core.js"></script>
+    <script type="text/javascript" src="../src/libs/dust-helpers.js"></script>
+    <script type="text/javascript" src="../src/libs/css.js"></script>
+    <script type="text/javascript" src="../src/wow.base.define.js"></script>
     <script type="text/javascript" src="../src/wow.base.history.js"></script>
     <script type="text/javascript" src="../src/wow.base.router.js"></script>
     <script type="text/javascript" src="../src/wow.base.render.js"></script>
@@ -40,13 +27,19 @@
     <script type="text/javascript" src="../src/wow.base.init.js"></script>
     <script type="text/javascript" src="../src/wow.ext.progressbar.js"></script>
 
-	<!-- router config -->
+    <!-- router config -->
     <script type="text/javascript" src="./router.js"></script>
     <script type="text/javascript">
-    	wow.init(router, {
+        wow.init(router, {
+            type: 'hash',
             handler: {
                 loading: function($wrap) {
-                    $wrap.html('');
+                    var df = $.Deferred();
+                        $wrap.html('loading...');
+                    setTimeout(function(){
+                        df.resolve();
+                    }, 1000);
+                    return df.promise();
                 }
             }
         });
