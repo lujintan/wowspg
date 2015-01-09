@@ -1,8 +1,0 @@
-<ul class="nav-bar clearfix">
-    <li class="n-i">
-        <a href="?module=index&page=a">ModuleIndex</a>
-    </li>
-    <li class="n-i">
-        <a href="?module=home&page=a">ModuleHome</a>
-    </li>
-</ul>
