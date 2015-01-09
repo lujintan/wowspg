@@ -1,0 +1,15 @@
+<div class="mod-home-layout clearfix">
+    <div class="sb-wp">
+        <ul class="sb-l">
+            <li class="sb-i current">
+                <a class="sb-link" href="?module=home&page=a">PageA</a>
+            </li>
+            <li class="sb-i">
+                <a class="sb-link" href="?module=home&page=b">PageB</a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- block for extends -->
+    <div class="mod-wow-home-main"></div>
+</div>

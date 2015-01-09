@@ -1,0 +1,28 @@
+.mod-home-layout{
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+}
+.mod-home-layout .sb-wp{
+    float: left;
+    width: 200px;
+    margin-right: 10px;
+}
+.mod-home-layout .sb-wp .sb-l .sb-i{
+    border-bottom: 1px solid #555;
+}
+.mod-home-layout .sb-wp .sb-l .sb-link{
+    display: block;
+    height: 35px;
+    line-height: 35px;
+    background: #444;
+    text-align: center;
+    color: #fff;
+}
+.mod-home-layout .sb-wp .sb-l .sb-link:hover{
+    background: #555;
+}
+.mod-home-layout .mod-wow-home-main{
+    float: left;
+    width: 800px;
+}

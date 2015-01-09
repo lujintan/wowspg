@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../bower_components/curl/src/curl.js"></script>
+    <script type="text/javascript">
+        curl.config({
+            packages: {
+                when: { location: '../..', main: 'when' }
+            }
+        });
+
+        curl(['./done']);
+    </script>
+</head>
+<body>
+
+</body>
+</html>
