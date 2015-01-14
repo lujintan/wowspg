@@ -1,7 +1,7 @@
 /**
  * Created by lujintan on 11/27/14.
  */
-define(["require", "exports", './declare', './UrlListener', './Error', './utils', './RouterMatcher', './Render', './HistoryStack', './Config'], function (require, exports, decl, UrlListener, err, util, RouterMatcher, Render, HistoryStack, Config) {
+define(["require", "exports", './declare', './UrlListener', './Error', './utils', './RouterMatcher', './Render', './HistoryStack', './Config', './DSGetter'], function (require, exports, decl, UrlListener, err, util, RouterMatcher, Render, HistoryStack, Config, DSGetter) {
     var win = decl.win;
     var ErrorType = err.ErrorType;
     var ErrorController = err.ErrorController;
@@ -79,6 +79,7 @@ define(["require", "exports", './declare', './UrlListener', './Error', './utils'
             win.wow.eventTrigger(win, 'wow.page.change', {
                 url: renderUrl
             });
+            DSGetter.cancelAll();
             routerMatcher.match(renderUrl).then(function (blockRoots) {
                 if (hisCtrl === 'replace') {
                     HistoryStack.replace(renderUrl, routerMatcher.getRouterTitle(), {});

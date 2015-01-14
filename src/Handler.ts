@@ -33,4 +33,5 @@ interface Handler{
      */
     destroy(elem: Element, data: Object): void;
 }
+
 export = Handler;

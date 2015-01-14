@@ -946,7 +946,8 @@ define('common/lib/wowspg/Block',["require", "exports", './utils', './HistorySta
         Block.prototype.initBlockHandlers = function (handlers) {
             var _this = this;
             util.lang.arrayForEach(handlers, function (handler) {
-                handler.init && handler.init(_this.container, _this.renderData);
+                var blockWrap = win.wow.selector('.wow-wrap-container', _this.container);
+                handler.init && handler.init(blockWrap && blockWrap[0] ? blockWrap[0] : _this.container, _this.renderData);
             });
         };
         /**
@@ -987,6 +988,7 @@ define('common/lib/wowspg/Block',["require", "exports", './utils', './HistorySta
             //the data for rendering template
             _this.renderData = {
                 data: _this.ds,
+                g: win.wow.data,
                 urlkeys: routerParams,
                 params: util.cus.getUrlParams(url),
                 location: location,
@@ -1024,7 +1026,11 @@ define('common/lib/wowspg/Block',["require", "exports", './utils', './HistorySta
                 var htmlStr = tplRender(_this.renderData);
                 if (_this.sync !== 'sync') {
                     //fill template in the block's container
-                    _this.container.innerHTML = htmlStr;
+                    _this.container.innerHTML = [
+                        '<section class="wow-wrap-container">',
+                        htmlStr,
+                        '</section>'
+                    ].join('');
                 }
                 //trigger the handler's init function
                 _this.initBlockHandlers(hses);
@@ -1777,7 +1783,7 @@ define('common/lib/wowspg/Render',["require", "exports", './utils', './Error', '
 /**
  * Created by lujintan on 11/27/14.
  */
-define('common/lib/wowspg/main',["require", "exports", './declare', './UrlListener', './Error', './utils', './RouterMatcher', './Render', './HistoryStack', './Config'], function (require, exports, decl, UrlListener, err, util, RouterMatcher, Render, HistoryStack, Config) {
+define('common/lib/wowspg/main',["require", "exports", './declare', './UrlListener', './Error', './utils', './RouterMatcher', './Render', './HistoryStack', './Config', './DSGetter'], function (require, exports, decl, UrlListener, err, util, RouterMatcher, Render, HistoryStack, Config, DSGetter) {
     var win = decl.win;
     var ErrorType = err.ErrorType;
     var ErrorController = err.ErrorController;
@@ -1855,6 +1861,7 @@ define('common/lib/wowspg/main',["require", "exports", './declare', './UrlListen
             win.wow.eventTrigger(win, 'wow.page.change', {
                 url: renderUrl
             });
+            DSGetter.cancelAll();
             routerMatcher.match(renderUrl).then(function (blockRoots) {
                 if (hisCtrl === 'replace') {
                     HistoryStack.replace(renderUrl, routerMatcher.getRouterTitle(), {});
