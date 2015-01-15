@@ -66,9 +66,9 @@ wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开
 
 详见，test目录文件
 
-##wowspg 开始搭建
+##wowspg 代码搭建
 
-###第一步，根据页面功能进行页面划分，url划分
+###第一步，根据页面功能进行页面划分，完成初步的路由建设
 
 例：
 
@@ -78,6 +78,17 @@ wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开
 |/pageA/pageA-2||功能页A-2|||
 |/pageA/pageA-2/pageA-2-a|||功能页A-2-a||
 |/pageB|功能页B||||
+
+wowspg路由结构是一个树形拓扑结构，形如：
+
+![wowspg_router_structure](./doc/image/wowspg_router_structure.jpg)
+
+* 路由规则使用正则匹配url
+* 上一级路由配置中可以通过正则指向下一级路由配置，下一级的路由配置可以直接写在当前配置文件，也可以指定一个amdID，在路由匹配阶段会异步加载下一级router config
+* 上级路由匹配成功之后会再进行下一级路由配置，直到匹配完成。如：/pageA/pageA-2/pageA-2-a会匹配上图黄色路径的路由配置
+
+###第二步，根据页面，进行页面片段（block）切分
+
 
 
 
