@@ -72,12 +72,12 @@ wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开
 
 例：
 
-    |*path*|*一级页面*|*二级页面*|*三级页面*|*...*|
-    |/pageA|功能页A||||
-    |/pageA/pageA-1||功能页A-1|||
-    |/pageA/pageA-2||功能页A-2|||
-    |/pageA/pageA-2/pageA-2-a|||功能页A-2-a||
-    |/pageB|功能页B||||
+|path|一级页面|二级页面|三级页面|...|
+|/pageA|功能页A||||
+|/pageA/pageA-1||功能页A-1|||
+|/pageA/pageA-2||功能页A-2|||
+|/pageA/pageA-2/pageA-2-a|||功能页A-2-a||
+|/pageB|功能页B||||
 
 wowspg路由结构是一个树形拓扑结构，形如：
 
