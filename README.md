@@ -1,7 +1,7 @@
 wowspg
 ==========
 
-#关于wowspg
+##关于wowspg
 
 ### wow单页系统简介
 wow单页系统可以帮助开发者快速搭建一套前端单页面应用，wow框架主要包含：
@@ -23,10 +23,12 @@ wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开
 
 开发人员需要实现Application部分定义的接口来实现自己的单页应用。
 
+##使用指南
 ### Hellow Word
 
+入口文件，初始化wowspg
+
 ```javascript
-    //入口文件，的调用
     requirejs(['wowspg/output/main'], function(wow){
         //wowspg 初始化
         //传入router配置
@@ -34,8 +36,9 @@ wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开
     });
 ```
 
+路由的相关配置
+
 ```javascript
-    //路由配置
     var router = {
         '.*': {     //需要匹配的路由正则
             block: {    //页面block配置，一个页面会分成n个block
@@ -63,6 +66,18 @@ wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开
 
 详见，test目录文件
 
-###wowspg 
+##wowspg 开始搭建
+
+###第一步，根据页面功能进行页面划分，url划分
+
+例：
+
+|*path*|*一级页面*|*二级页面*|*三级页面*|*...*|
+|/pageA|功能页A||||
+|/pageA/pageA-1||功能页A-1|||
+|/pageA/pageA-2||功能页A-2|||
+|/pageA/pageA-2/pageA-2-a|||功能页A-2-a||
+|/pageB|功能页B||||
+
 
 
