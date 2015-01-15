@@ -107,6 +107,13 @@ wowspg路由结构是一个树形拓扑结构，形如：
 
 ###第二步，根据页面，进行页面片段（block）切分
 
+* wowspg的block的概念类似于smarty的block
+* router配置中，直接指向block信息配置，而不是page
+* 下级router指向的block可以继承父级router的block或者祖先router的block
+* 同一级router下得block可以相互依赖
+* 存在依赖关系的block，在被依赖的block渲染结束才会渲染新的block
+
+![wow_block_info](./doc/image/wow_block_info.jpg)
 
 
 
