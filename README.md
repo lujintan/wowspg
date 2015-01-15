@@ -6,13 +6,14 @@ wowspg
 ### wow单页系统简介
 wow单页系统可以帮助开发者快速搭建一套前端单页面应用，wow框架主要包含：
 
-* wowspg —— 前端Javascript单页面框架，单页面应用前端基础库
-* wowui —— 前端基础样式库
-* wowbuilder —— 单页面框架自动化编译工具，前端人员可以按照传统方式进行开发，由wowbuilder编译成为单页面，同时支持打包、压缩、本地测试等前端开发相关工具
-* wowstyleguide —— wow框架代码开发规范
+* wowspg — 前端Javascript单页面框架，单页面应用前端基础库
+* wowui — 前端基础样式库
+* [wowbuilder](https://github.com/cloud-fe/wowbuilder) — 单页面框架自动化编译工具，前端人员可以按照传统方式进行开发，由wowbuilder编译成为单页面，同时支持打包、压缩、本地测试等前端开发相关工具
+* [wowstyleguide](https://github.com/cloud-fe/wowstyleguide) — wow框架代码开发规范
 
 ### wowspg基础架构
 wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开发者通过前端路由配置来实现PC端和wise端浏览器单页面应用。wowspg源码使用TypeScript进行编写，基于AMD规范编译产出js文件至output目录。
+当然，强烈建议配合wowbuider，遵照wowstyleguide一同使用。
 
 ![wowspg structure](./doc/image/wowspg_system_structure.jpg)
 
@@ -428,3 +429,12 @@ wowspg的错误都发生在页面切换阶段，开发人员可以通过绑定wo
         <td>600+</td><td>资源加载失败</td>
     </tr>
 </table>
+
+##参考
+
+* [wowbuilder](https://github.com/cloud-fe/wowbuilder)
+* [wowstyleguide](https://github.com/cloud-fe/wowstyleguide)
+* [wowspg-builder](https://github.com/cloud-fe/wowspg-builder)
+* [requirejs](http://requirejs.org/)
+* [sizzle](http://sizzlejs.com/)
+* [whenjs](https://github.com/cujojs/when/)
