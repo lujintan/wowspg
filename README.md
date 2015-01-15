@@ -208,12 +208,120 @@ dt直接导出function，形如：
 
 ##wowspg API
 
-### function wow.init
+### function init
 
-——————
-描述 : 单页面初始化
-参数 : wasai
-——————
+wowspg程序初始化
 
+```javascript
+    init(routerConf, options);
+```
 
+<table>
+    <tr>
+        <td>参数</td><td>类型</td><td>说明</td><td>是否必须</td>
+    </tr>
+    <tr>
+        <td>routerConf</td><td>object</td>
+        <td>路由配置</td>
+        <td>是</td>
+    </tr>
+    <tr>
+        <td>options</td><td>object</td>
+        <td>选项配置</td>
+        <td>否</td>
+    </tr>
+</table>
+
+options的详细参数描述
+
+<table>
+    <tr>
+        <td>参数</td><td>类型</td><td>说明</td><td>是否必须</td><td>默认值</td>
+    </tr>
+    <tr>
+        <td>base</td><td>string</td>
+        <td>单页面的基础路径</td>
+        <td>否</td>
+        <td>window.location.origin</td>
+    </tr>
+    <tr>
+        <td>timeout</td><td>number</td>
+        <td>超时时间（秒）</td>
+        <td>否</td>
+        <td>30</td>
+    </tr>
+    <tr>
+        <td>supportHistory</td><td>boolean</td>
+        <td>是否支持历史记录</td>
+        <td>否</td>
+        <td>true</td>
+    </tr>
+    <tr>
+        <td>type</td><td>string</td>
+        <td>单页面类型，可选值: all|hash，all表示优先使用history api，hash表示仅使用hash</td>
+        <td>否</td>
+        <td>all</td>
+    </tr>
+    <tr>
+        <td>unGoClass</td><td>string</td>
+        <td>如果希望当点击链接，不进行单页面路由匹配，则在该链接上加这个className</td>
+        <td>否</td>
+        <td>un-go</td>
+    </tr>
+    <tr>
+        <td>promise</td><td>object</td>
+        <td>promise基础库实现，如果基础库使用jQuery，则不需传入</td>
+        <td>否</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>selector</td><td>Function</td>
+        <td>选择器的实现，如果基础库使用jQuery，则不需传入</td>
+        <td>否</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>eventTrigger</td><td>Function</td>
+        <td>事件的触发器，如果基础库使用jQuery，则不需传入</td>
+        <td>否</td>
+        <td></td>
+    </tr>
+</table>
+
+### function define
+
+定wowspg全局变量，定义的变量可以直接用来进行datasource关键词替换和模板渲染
+
+```javascript
+    define(key, value);
+```
+
+<table>
+    <tr>
+        <td>参数</td><td>类型</td><td>说明</td><td>是否必须</td>
+    </tr>
+    <tr>
+        <td>key</td><td>string</td><td>定义变量的key</td><td>是</td>
+    </tr>
+    <tr>
+        <td>value</td><td>any</td><td>定义变量的value</td><td>是</td>
+    </tr>
+</table>
+
+### function go
+
+跳转至指定页面
+
+```javascript
+    go(url)
+```
+
+<table>
+    <tr>
+        <td>参数</td><td>类型</td><td>说明</td><td>是否必须</td>
+    </tr>
+    <tr>
+        <td>url</td><td>string</td><td>将要跳转的url地址</td><td>是</td>
+    </tr>
+</table>
 
