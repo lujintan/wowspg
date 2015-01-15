@@ -29,39 +29,39 @@ wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开
 入口文件，初始化wowspg
 
 ```javascript
-    requirejs(['wowspg/output/main'], function(wow){
-        //wowspg 初始化
-        //传入router配置
-        wow.init(router);
-    });
+requirejs(['wowspg/output/main'], function(wow){
+    //wowspg 初始化
+    //传入router配置
+    wow.init(router);
+});
 ```
 
 路由的相关配置
 
 ```javascript
-    var router = {
-        '.*': {     //需要匹配的路由正则
-            block: {    //页面block配置，一个页面会分成n个block
-                header: {   //key 为block的名字
-                    selector: '#gHeader',   //block对应的页面位置（选择器）
-                    tpl: 'header',      //模板amdID，页面加载时会异步引入tpl文件
-                    deps: ['main', 'footer']    //该block依赖的block，当被依赖的模块渲染完成后才会进行该模块渲染
-                },
-                main: {
-                    selector: '#gMain'
-                },
-                footer: {
-                    selector: '#gFooter',
-                    tpl: 'footer',
-                    deps: ['main']
-                }
+var router = {
+    '.*': {     //需要匹配的路由正则
+        block: {    //页面block配置，一个页面会分成n个block
+            header: {   //key 为block的名字
+                selector: '#gHeader',   //block对应的页面位置（选择器）
+                tpl: 'header',      //模板amdID，页面加载时会异步引入tpl文件
+                deps: ['main', 'footer']    //该block依赖的block，当被依赖的模块渲染完成后才会进行该模块渲染
             },
-            router: {
-                '|module=index': 'index/router',    //子路由amdId，配置结构与当前路由结构一直，也可直接同步写入
-                'module=home': 'home/router'
+            main: {
+                selector: '#gMain'
+            },
+            footer: {
+                selector: '#gFooter',
+                tpl: 'footer',
+                deps: ['main']
             }
+        },
+        router: {
+            '|module=index': 'index/router',    //子路由amdId，配置结构与当前路由结构一直，也可直接同步写入
+            'module=home': 'home/router'
         }
-    };
+    }
+};
 ```
 
 详见，test目录文件
@@ -118,7 +118,7 @@ wowspg路由结构是一个树形拓扑结构，形如：
 
 ###第三步，添加页面样式、数据处理器和页面逻辑处理器
 
-#### ds —— 数据源
+#### ds — 数据源
 
 * ds(datasource)是渲染block中模板的数据源
 * 每一个block最多只能有一个数据源
@@ -127,16 +127,16 @@ wowspg路由结构是一个树形拓扑结构，形如：
 * 数据源的配置支持使用页面url参数和从router中匹配的urlkey进行替换，如：
 
 ```javascript
-    {
-        block: {
-            header: {
-                ds: '/aaa/bbb?pn={pn}&query_status={status}'
-            }
+{
+    block: {
+        header: {
+            ds: '/aaa/bbb?pn={pn}&query_status={status}'
         }
     }
+}
 ```
 
-#### dt —— block数据转换器
+#### dt — block数据转换器
 
 * dt(datatransfer)是数据源的转换器
 * 每一个block最多只能有一个数据转换器
@@ -145,15 +145,15 @@ wowspg路由结构是一个树形拓扑结构，形如：
 dt直接导出function，形如：
 
 ```javascript
-    module.exports = function(dsData){
-        //dsData 为server直接打回的数据
-        //......
+module.exports = function(dsData){
+    //dsData 为server直接打回的数据
+    //......
 
-        return renderData;
-        //返回渲染模板的数据，也可以返回promise
-        //若返回`promise`，则renderData会作为resolve的第一个参数
-        //关于`promise`的相关问题，可参见promise的相关规范
-    }
+    return renderData;
+    //返回渲染模板的数据，也可以返回promise
+    //若返回`promise`，则renderData会作为resolve的第一个参数
+    //关于`promise`的相关问题，可参见promise的相关规范
+}
 ```
 
 * dt 直接返回渲染模板的数据
@@ -161,17 +161,17 @@ dt直接导出function，形如：
 * 渲染模板的所有数据如下：
 
 ```javascript
-    {
-        data: {object} 经过dt转换后的数据
-        g: {object} wow.define的wow全局数据
-        urlKeys: {object} 路由中匹配的核心数据
-        params: {object} url中得参数
-        location: {object} window.location 信息
-        title: {string} 页面标题
-    }
+{
+    data: {object} 经过dt转换后的数据
+    g: {object} wow.define的wow全局数据
+    urlKeys: {object} 路由中匹配的核心数据
+    params: {object} url中得参数
+    location: {object} window.location 信息
+    title: {string} 页面标题
+}
 ```
 
-#### handler —— block逻辑处理器
+#### handler — block逻辑处理器
 
 * handler为页面逻辑处理器
 * handler分为start、ready、usable三种类型，表示handler加载的优先级，start > ready > usable
@@ -179,30 +179,30 @@ dt直接导出function，形如：
 * handler接口定义：
 
 ```javascript
-    interface Handler{
-        /**
-         * Will execute when block render
-         * @param elem the container of the block
-         * @param data : {
-         *          data        //data which is used to render block
-         *          urlKeys     //matched from router "(:xxx)"
-         *          params      //the url parameter
-         *          location    //the Window's location object
-         *          title       //the page's title
-         *      }
-         */
-        init(elem: Element, data: Object): void;
+interface Handler{
+    /**
+     * Will execute when block render
+     * @param elem the container of the block
+     * @param data : {
+     *          data        //data which is used to render block
+     *          urlKeys     //matched from router "(:xxx)"
+     *          params      //the url parameter
+     *          location    //the Window's location object
+     *          title       //the page's title
+     *      }
+     */
+    init(elem: Element, data: Object): void;
 
-        /**
-         * Will execute when page destroy
-         * @param elem
-         * @param data
-         */
-        destroy(elem: Element, data: Object): void;
-    }
+    /**
+     * Will execute when page destroy
+     * @param elem
+     * @param data
+     */
+    destroy(elem: Element, data: Object): void;
+}
 ```
 
-#### css —— block样式文件
+#### css — block样式文件
 
 * css为block的样式文件，定义该block的样式文件
 
@@ -213,7 +213,7 @@ dt直接导出function，形如：
 wowspg程序初始化
 
 ```javascript
-    init(routerConf, options);
+init(routerConf, options);
 ```
 
 <table>
@@ -293,7 +293,7 @@ options的详细参数描述
 定wowspg全局变量，定义的变量可以直接用来进行datasource关键词替换和模板渲染
 
 ```javascript
-    define(key, value);
+define(key, value);
 ```
 
 <table>
@@ -313,7 +313,7 @@ options的详细参数描述
 跳转至指定页面
 
 ```javascript
-    go(url)
+go(url)
 ```
 
 <table>
@@ -325,3 +325,106 @@ options的详细参数描述
     </tr>
 </table>
 
+##wowspg 事件
+
+### wow.page.change
+
+以jQuery作为基础库举例
+
+```javascript
+$(window).bind('wow.page.change', function(e, data){
+    if (data.error) {
+        if (data.error.code === 404){
+            //page not found
+        }
+    } else{
+        //...
+    }
+});
+```
+
+当页面切换时触发，事件返回data参数描述：
+
+<table>
+    <tr>
+        <td>参数</td><td>类型</td><td>说明</td>
+    </tr>
+    <tr>
+        <td>error</td><td>object</td><td>当页面切换出现错误是返回，其中包含错误码和错误信息</td>
+    </tr>
+    <tr>
+        <td>url</td><td>object</td><td>当前渲染的页面url</td>
+    </tr>
+</table>
+
+### wow.page.changed
+
+以jQuery作为基础库举例
+
+```javascript
+$(window).bind('wow.page.change', function(e, data){
+    if (data.error) {
+        if (data.error.code === 404){
+            //page not found
+        }
+    } else{
+        //...
+    }
+});
+```
+
+当页面切换完成时触发，事件返回data参数描述：
+
+<table>
+    <tr>
+        <td>参数</td><td>类型</td><td>说明</td>
+    </tr>
+    <tr>
+        <td>error</td><td>object</td><td>当页面切换出现错误是返回，其中包含错误码和错误信息</td>
+    </tr>
+    <tr>
+        <td>his</td><td>object</td><td>渲染模板的数据，同时也是当前历史记录信息</td>
+    </tr>
+    <tr>
+        <td>url</td><td>object</td><td>当前渲染的页面url</td>
+    </tr>
+</table>
+
+##wowspg 错误处理
+
+wowspg的错误都发生在页面切换阶段，开发人员可以通过绑定wow.page.change事件进行错误监听。
+
+错误信息返回格式：
+
+```javascript
+{
+    code: {number} 错误码
+    message: {string} 错误信息
+}
+```
+
+主要错误码&说明：
+
+<table>
+    <tr>
+        <td>错误码</td><td>说明</td>
+    </tr>
+    <tr>
+        <td>100+</td><td>配置信息错误</td>
+    </tr>
+    <tr>
+        <td>200+</td><td>超时类错误</td>
+    </tr>
+    <tr>
+        <td>300+</td><td>Block渲染错误</td>
+    </tr>
+    <tr>
+        <td>400+</td><td>页面没有对应路由配置，页面未找到</td>
+    </tr>
+    <tr>
+        <td>500+</td><td>运行时逻辑错误</td>
+    </tr>
+    <tr>
+        <td>600+</td><td>资源加载失败</td>
+    </tr>
+</table>
