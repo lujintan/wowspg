@@ -18,7 +18,7 @@ wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开
 
 * 应用程序接口（Application）：开发者进行Block开发时需要实现的接口定义。主要包含：路由配置、Block 的前端模板、数据转换器、模板样式文件、模板逻辑处理器（其中包含block初始化即要执行的逻辑处理、block初始化完成时需要执行的处理器和block完全加载完是执行的处理器）
 * 单页核心程序（single page core）：单页面架构的核心架构。主要包含：前端路由核心处理器、Block初始化程序、Block渲染器、页面更换的监听程序、页面历史缓存程序、历史记录处理器、DS处理器、错误处理器。
-* 核心库（Libraries）：功单页面的核心程序调用的核心库。主要包含：AMD加载器（如：require），Promise处理器（如：when）、Css选择器支持（如：Sizzle or JQuery）。核心库可制定为实现AMD、Promise、Selector的其他基础库代替。
+* 核心库（Libraries）：功单页面的核心程序调用的核心库。主要包含：AMD加载器（如：require），Promise处理器（如：when）、Css选择器支持（如：`Sizzle` or `JQuery`）。核心库可制定为实现AMD、Promise、Selector的其他基础库代替。
 * 浏览器接口（Browser API）：单页核心架构主要使用的浏览器API，其中主要包括：History API。
 
 开发人员需要实现Application部分定义的接口来实现自己的单页应用。
@@ -103,7 +103,7 @@ wowspg路由结构是一个树形拓扑结构，形如：
 
 * 路由规则使用正则匹配url
 * 上一级路由配置中可以通过正则指向下一级路由配置，下一级的路由配置可以直接写在当前配置文件，也可以指定一个amdID，在路由匹配阶段会异步加载下一级router config
-* 上级路由匹配成功之后会再进行下一级路由配置，直到匹配完成。如：/pageA/pageA-2/pageA-2-a会匹配上图黄色路径的路由配置
+* 上级路由匹配成功之后会再进行下一级路由配置，直到匹配完成。如：`/pageA/pageA-2/pageA-2-a`会匹配上图黄色路径的路由配置
 
 ###第二步，根据页面，进行页面片段（block）切分
 
@@ -116,7 +116,104 @@ wowspg路由结构是一个树形拓扑结构，形如：
 
 ![wow_block_info](./doc/image/wow_block_info.jpg)
 
+###第三步，添加页面样式、数据处理器和页面逻辑处理器
 
+#### ds —— 数据源
+
+* ds(datasource)是渲染block中模板的数据源
+* 每一个block最多只能有一个数据源
+* 默认数据源采用ajax方式进行数据获取
+* 数据源返回数据绑定在data变量中，模板中可直接读取
+* 数据源的配置支持使用页面url参数和从router中匹配的urlkey进行替换，如：
+
+```javascript
+    {
+        block: {
+            header: {
+                ds: '/aaa/bbb?pn={pn}&query_status={status}'
+            }
+        }
+    }
+```
+
+#### dt —— block数据转换器
+
+* dt(datatransfer)是数据源的转换器
+* 每一个block最多只能有一个数据转换器
+* 如果block有dt，则数据源会先经过dt进行数据处理，在使用处理后的数据进行模板渲染
+
+dt直接导出function，形如：
+
+```javascript
+    module.exports = function(dsData){
+        //dsData 为server直接打回的数据
+        //......
+
+        return renderData;
+        //返回渲染模板的数据，也可以返回promise
+        //若返回`promise`，则renderData会作为resolve的第一个参数
+        //关于`promise`的相关问题，可参见promise的相关规范
+    }
+```
+
+* dt 直接返回渲染模板的数据
+* dt 也可以返回promise，若返回类型为promise，渲染模板数据作为resolve的第一个参数
+* 渲染模板的所有数据如下：
+
+```javascript
+    {
+        data: {object} 经过dt转换后的数据
+        g: {object} wow.define的wow全局数据
+        urlKeys: {object} 路由中匹配的核心数据
+        params: {object} url中得参数
+        location: {object} window.location 信息
+        title: {string} 页面标题
+    }
+```
+
+#### handler —— block逻辑处理器
+
+* handler为页面逻辑处理器
+* handler分为start、ready、usable三种类型，表示handler加载的优先级，start > ready > usable
+* handler不限定个数
+* handler接口定义：
+
+```javascript
+    interface Handler{
+        /**
+         * Will execute when block render
+         * @param elem the container of the block
+         * @param data : {
+         *          data        //data which is used to render block
+         *          urlKeys     //matched from router "(:xxx)"
+         *          params      //the url parameter
+         *          location    //the Window's location object
+         *          title       //the page's title
+         *      }
+         */
+        init(elem: Element, data: Object): void;
+
+        /**
+         * Will execute when page destroy
+         * @param elem
+         * @param data
+         */
+        destroy(elem: Element, data: Object): void;
+    }
+```
+
+#### css —— block样式文件
+
+* css为block的样式文件，定义该block的样式文件
+
+##wowspg API
+
+### function wow.init
+
+——————
+描述 : 单页面初始化
+参数 : wasai
+——————
 
 
 
