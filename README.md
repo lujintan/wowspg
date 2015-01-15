@@ -432,9 +432,9 @@ wowspg的错误都发生在页面切换阶段，开发人员可以通过绑定wo
 
 ##参考
 
-* [wowbuilder](https://github.com/cloud-fe/wowbuilder)
-* [wowstyleguide](https://github.com/cloud-fe/wowstyleguide)
-* [wowspg-builder](https://github.com/cloud-fe/wowspg-builder)
-* [requirejs](http://requirejs.org/)
-* [sizzle](http://sizzlejs.com/)
-* [whenjs](https://github.com/cujojs/when/)
+* wowbuilder: [https://github.com/cloud-fe/wowbuilder](https://github.com/cloud-fe/wowbuilder)
+* wowstyleguide: [https://github.com/cloud-fe/wowstyleguide](https://github.com/cloud-fe/wowstyleguide)
+* wowspg-builder: [https://github.com/cloud-fe/wowspg-builder](https://github.com/cloud-fe/wowspg-builder)
+* requirejs: [http://requirejs.org/](http://requirejs.org/)
+* sizzle: [http://sizzlejs.com/](http://sizzlejs.com/)
+* whenjs: [https://github.com/cujojs/when/](https://github.com/cujojs/when/)
