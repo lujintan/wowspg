@@ -112,8 +112,11 @@ wowspg路由结构是一个树形拓扑结构，形如：
 * 下级router指向的block可以继承父级router的block或者祖先router的block
 * 同一级router下得block可以相互依赖
 * 存在依赖关系的block，在被依赖的block渲染结束才会渲染新的block
+* 如下图所示，url `/pageA/pageA-2/pageA-2-a`, 会匹配到四个block：`header-page-2`, `main`, `footer-pageA-2`, `footer-pageB`。页面渲染时最终只会渲染红色的block。
 
 ![wow_block_info](./doc/image/wow_block_info.jpg)
+
+
 
 
 
