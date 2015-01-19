@@ -209,7 +209,7 @@ interface Handler{
 
 ##wowspg block 渲染流程
 
-![wowspg_block_follow](./doc/image/wowspg_block_follow.jpg)
+![wow_block_follow](./doc/image/wow_block_follow.jpg)
 
 ##wowspg API
 
