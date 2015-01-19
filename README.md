@@ -207,6 +207,10 @@ interface Handler{
 
 * css为block的样式文件，定义该block的样式文件
 
+##wowspg block 渲染流程
+
+![wowspg_block_follow](./doc/image/wowspg_block_follow.jpg)
+
 ##wowspg API
 
 ### function init
