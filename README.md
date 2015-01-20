@@ -17,9 +17,9 @@ wowspg作为wow系统js基础库，可以脱离wow系统单独运行，支持开
 
 ![wowspg structure](./doc/image/wowspg_system_structure.jpg)
 
-* 应用程序接口（Application）：开发者进行Block开发时需要实现的接口定义。主要包含：路由配置、Block 的前端模板、数据转换器、模板样式文件、模板逻辑处理器（其中包含block初始化即要执行的逻辑处理、block初始化完成时需要执行的处理器和block完全加载完是执行的处理器）
+* 应用程序接口（Application）：开发者进行Block开发时需要实现的接口定义。主要包含：路由配置、Block的前端模板、数据转换器、模板样式文件、模板逻辑处理器（其中包含block初始化即要执行、初始化完成时需要执行和完全加载完时执行的处理器）
 * 单页核心程序（single page core）：单页面架构的核心架构。主要包含：前端路由核心处理器、Block初始化程序、Block渲染器、页面更换的监听程序、页面历史缓存程序、历史记录处理器、DS处理器、错误处理器。
-* 核心库（Libraries）：功单页面的核心程序调用的核心库。主要包含：AMD加载器（如：require），Promise处理器（如：when）、Css选择器支持（如：`Sizzle` or `JQuery`）。核心库可制定为实现AMD、Promise、Selector的其他基础库代替。
+* 核心库（Libraries）：单页面的核心程序调用的核心库。主要包含：AMD加载器（如：require），Promise处理器（如：when）、Css选择器支持（如：Sizzle or JQuery）。核心库可制定为实现AMD、Promise、Selector的其他基础库。
 * 浏览器接口（Browser API）：单页核心架构主要使用的浏览器API，其中主要包括：History API。
 
 开发人员需要实现Application部分定义的接口来实现自己的单页应用。

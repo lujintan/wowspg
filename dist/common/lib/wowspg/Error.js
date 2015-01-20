@@ -4,6 +4,7 @@ define(["require", "exports", './utils'], function (require, exports, util) {
      */
     (function (ErrorType) {
         ErrorType[ErrorType["CONFIG_ERROR"] = 101] = "CONFIG_ERROR";
+        ErrorType[ErrorType["ROUTER_MATCHING_STOPPED"] = 102] = "ROUTER_MATCHING_STOPPED";
         ErrorType[ErrorType["TIMEOUT_ERROR"] = 202] = "TIMEOUT_ERROR";
         ErrorType[ErrorType["BLOCK_ERROR"] = 303] = "BLOCK_ERROR";
         ErrorType[ErrorType["BLOCK_SELECTOR_IS_EMPTY"] = 310] = "BLOCK_SELECTOR_IS_EMPTY";
@@ -72,6 +73,7 @@ define(["require", "exports", './utils'], function (require, exports, util) {
          */
         ErrorController.ErrorList = [
             new ErrorInfo(101 /* CONFIG_ERROR */, 'Config is error!'),
+            new ErrorInfo(102 /* ROUTER_MATCHING_STOPPED */, 'Router matching has stopped!'),
             new ErrorInfo(202 /* TIMEOUT_ERROR */, 'Page load timeout!'),
             new ErrorInfo(303 /* BLOCK_ERROR */, 'Block render error!'),
             new ErrorInfo(310 /* BLOCK_SELECTOR_IS_EMPTY */, 'Block\'s selector is empty!'),

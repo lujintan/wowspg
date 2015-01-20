@@ -76,9 +76,6 @@ define(["require", "exports", './declare', './UrlListener', './Error', './utils'
                 });
                 return;
             }
-            win.wow.eventTrigger(win, 'wow.page.change', {
-                url: renderUrl
-            });
             DSGetter.cancelAll();
             routerMatcher.match(renderUrl).then(function (blockRoots) {
                 if (hisCtrl === 'replace') {
@@ -103,6 +100,9 @@ define(["require", "exports", './declare', './UrlListener', './Error', './utils'
                     error: errInfo,
                     url: renderUrl
                 });
+            });
+            win.wow.eventTrigger(win, 'wow.page.change', {
+                url: renderUrl
             });
         }
         wow.go = go;

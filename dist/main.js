@@ -563,6 +563,7 @@ define('common/lib/wowspg/Error',["require", "exports", './utils'], function (re
      */
     (function (ErrorType) {
         ErrorType[ErrorType["CONFIG_ERROR"] = 101] = "CONFIG_ERROR";
+        ErrorType[ErrorType["ROUTER_MATCHING_STOPPED"] = 102] = "ROUTER_MATCHING_STOPPED";
         ErrorType[ErrorType["TIMEOUT_ERROR"] = 202] = "TIMEOUT_ERROR";
         ErrorType[ErrorType["BLOCK_ERROR"] = 303] = "BLOCK_ERROR";
         ErrorType[ErrorType["BLOCK_SELECTOR_IS_EMPTY"] = 310] = "BLOCK_SELECTOR_IS_EMPTY";
@@ -631,6 +632,7 @@ define('common/lib/wowspg/Error',["require", "exports", './utils'], function (re
          */
         ErrorController.ErrorList = [
             new ErrorInfo(101 /* CONFIG_ERROR */, 'Config is error!'),
+            new ErrorInfo(102 /* ROUTER_MATCHING_STOPPED */, 'Router matching has stopped!'),
             new ErrorInfo(202 /* TIMEOUT_ERROR */, 'Page load timeout!'),
             new ErrorInfo(303 /* BLOCK_ERROR */, 'Block render error!'),
             new ErrorInfo(310 /* BLOCK_SELECTOR_IS_EMPTY */, 'Block\'s selector is empty!'),
@@ -1177,7 +1179,10 @@ define('common/lib/wowspg/Block',["require", "exports", './utils', './HistorySta
                 if (typeof _blockDs === 'string' && _blockDs === _thisDs) {
                     _isEqual = true;
                 }
-                else if (typeof _blockDs === 'object' && typeof _thisDs === 'object') {
+                else if (!_blockDs && !_thisDs) {
+                    _isEqual = true;
+                }
+                else if (_blockDs && typeof _blockDs === 'object' && _thisDs && typeof _thisDs === 'object') {
                     _isEqual = true;
                     util.lang.objForIn(_blockDs, function (blockInfo, blockKey) {
                         if (blockInfo != _thisDs[name]) {
@@ -1424,7 +1429,7 @@ define('common/lib/wowspg/Tree',["require", "exports", './utils', './declare'], 
                     else {
                         var compLen = 1;
                         util.lang.arrayForEach(childrenNodes, function (childNode, index) {
-                            _this.dfTraversalNode(childNode, callback).done(function () {
+                            _this.dfTraversalNode(childNode, callback).then(function () {
                                 if (++compLen > nodeLen) {
                                     //children nodes are all done
                                     deferred.resolve();
@@ -1457,6 +1462,7 @@ define('common/lib/wowspg/RouterMatcher',["require", "exports", './Router', './E
             this.routerConf = this.fixRouterConf();
             this.routerParams = {};
             this.currentRouterPath = [];
+            this.currentRenderUrl = '';
         }
         /**
          * Judging the configuration of router is correct
@@ -1488,65 +1494,75 @@ define('common/lib/wowspg/RouterMatcher',["require", "exports", './Router', './E
             _this.currentRouterPath = [];
             var rootRouterDoneCount = 1;
             var rootCount = 0;
+            var isRejected = false;
             util.lang.objForIn(_this.routerConf, function (rConf, reg) {
                 var rootRouter = new Router(reg, rConf.title, rConf.block, rConf.router);
                 var routerTree = new Tree(rootRouter);
                 var nextMatchRouter;
                 rootCount++;
-                //traversal the router tree to find out the router matched
-                routerTree.traversal(function (router) {
-                    var defLoadRouter = win.wow.promise.defer();
-                    var routerReg = router.getUrlReg();
-                    var regResult = routerReg.exec(url);
-                    if (regResult && typeof regResult[0] !== 'undefined') {
-                        if (nextMatchRouter) {
-                            if (!nextMatchRouter.equal(router)) {
-                                return true;
+                if (_this.currentRenderUrl === url) {
+                    //traversal the router tree to find out the router matched
+                    routerTree.traversal(function (router) {
+                        var defLoadRouter = win.wow.promise.defer();
+                        var routerReg = router.getUrlReg();
+                        var regResult = routerReg.exec(url);
+                        if (_this.currentRenderUrl !== url) {
+                            if (!isRejected) {
+                                deferred.reject(ErrorController.getError(102 /* ROUTER_MATCHING_STOPPED */));
+                                isRejected = true;
+                            }
+                            return true;
+                        }
+                        if (regResult && typeof regResult[0] !== 'undefined') {
+                            if (nextMatchRouter) {
+                                if (!nextMatchRouter.equal(router)) {
+                                    return true;
+                                }
+                                else {
+                                    nextMatchRouter = null;
+                                }
                             }
                             else {
-                                nextMatchRouter = null;
-                            }
-                        }
-                        else {
-                            var childRouters = router.getChildrenNods();
-                            util.lang.arrayForEach(childRouters, function (router) {
-                                var routerUrlReg = router.getUrlReg(), regChildResult = routerUrlReg.exec(url);
-                                if (regChildResult && typeof regChildResult[0] !== 'undefined') {
-                                    nextMatchRouter = router;
+                                var childRouters = router.getChildrenNods();
+                                util.lang.arrayForEach(childRouters, function (router) {
+                                    var routerUrlReg = router.getUrlReg(), regChildResult = routerUrlReg.exec(url);
+                                    if (regChildResult && typeof regChildResult[0] !== 'undefined') {
+                                        nextMatchRouter = router;
+                                    }
+                                });
+                                if (!nextMatchRouter && childRouters.length) {
+                                    return true;
                                 }
+                            }
+                            //this router node is what i want
+                            _this.currentRouterPath.push(router);
+                            var urlkeys = router.getUrlKeys();
+                            util.lang.arrayForEach(urlkeys, function (urlKey, index) {
+                                _this.routerParams[urlKey] = regResult[index + 1];
                             });
-                            if (!nextMatchRouter && childRouters.length) {
-                                return true;
+                            if (typeof router.blocks === 'string') {
+                                util.lang._require([router.blocks]).then(function (mods) {
+                                    var childRouterConf = mods[0];
+                                    router.setBlocks(childRouterConf.block);
+                                    router.setChildrenRouters(childRouterConf.router);
+                                    defLoadRouter.resolve();
+                                });
+                            }
+                            else {
+                                defLoadRouter.resolve();
                             }
                         }
-                        //this router node is what i want
-                        _this.currentRouterPath.push(router);
-                        var urlkeys = router.getUrlKeys();
-                        util.lang.arrayForEach(urlkeys, function (urlKey, index) {
-                            _this.routerParams[urlKey] = regResult[index + 1];
-                        });
-                        if (typeof router.blocks === 'string') {
-                            util.lang._require([router.blocks]).then(function (mods) {
-                                var childRouterConf = mods[0];
-                                router.setBlocks(childRouterConf.block);
-                                router.setChildrenRouters(childRouterConf.router);
-                                defLoadRouter.resolve();
-                            });
-                        }
                         else {
-                            defLoadRouter.resolve();
+                            //stop matching this leaf and going on
+                            return true;
                         }
-                    }
-                    else {
-                        //stop matching this leaf and going on
-                        return true;
-                    }
-                    return defLoadRouter.promise;
-                }).done(function () {
-                    if (++rootRouterDoneCount > rootCount) {
-                        deferred.resolve();
-                    }
-                });
+                        return defLoadRouter.promise;
+                    }).then(function () {
+                        if (++rootRouterDoneCount > rootCount) {
+                            deferred.resolve();
+                        }
+                    });
+                }
             });
             return deferred.promise;
         };
@@ -1603,9 +1619,10 @@ define('common/lib/wowspg/RouterMatcher',["require", "exports", './Router', './E
          * @returns {Promise}
          */
         RouterMatcher.prototype.match = function (url) {
-            var deferred = win.wow.promise.defer();
             var _this = this;
+            var deferred = win.wow.promise.defer();
             var blockTreeRoots = [];
+            _this.currentRenderUrl = url;
             _this.routerMatch(url).done(function () {
                 var currentRouterPath = _this.currentRouterPath;
                 if (!currentRouterPath.length) {
@@ -1858,9 +1875,6 @@ define('common/lib/wowspg/main',["require", "exports", './declare', './UrlListen
                 });
                 return;
             }
-            win.wow.eventTrigger(win, 'wow.page.change', {
-                url: renderUrl
-            });
             DSGetter.cancelAll();
             routerMatcher.match(renderUrl).then(function (blockRoots) {
                 if (hisCtrl === 'replace') {
@@ -1885,6 +1899,9 @@ define('common/lib/wowspg/main',["require", "exports", './declare', './UrlListen
                     error: errInfo,
                     url: renderUrl
                 });
+            });
+            win.wow.eventTrigger(win, 'wow.page.change', {
+                url: renderUrl
             });
         }
         wow.go = go;

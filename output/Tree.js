@@ -32,7 +32,7 @@ define(["require", "exports", './utils', './declare'], function (require, export
                     else {
                         var compLen = 1;
                         util.lang.arrayForEach(childrenNodes, function (childNode, index) {
-                            _this.dfTraversalNode(childNode, callback).done(function () {
+                            _this.dfTraversalNode(childNode, callback).then(function () {
                                 if (++compLen > nodeLen) {
                                     //children nodes are all done
                                     deferred.resolve();

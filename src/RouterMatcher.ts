@@ -17,12 +17,14 @@ class RouterMatcher{
     private routerConf: any;
     private currentRouterPath: Router[];
     private routerParams: Object;
+    private currentRenderUrl: string;
 
     constructor(routerConf: any){
         this.routerConf = routerConf;
         this.routerConf = this.fixRouterConf();
         this.routerParams = {};
         this.currentRouterPath = [];
+        this.currentRenderUrl = '';
     }
 
     /**
@@ -59,67 +61,79 @@ class RouterMatcher{
         _this.currentRouterPath = [];
         var rootRouterDoneCount: number = 1;
         var rootCount: number = 0;
+        var isRejected: boolean = false;
+
         util.lang.objForIn(_this.routerConf, function(rConf, reg){
             var rootRouter: Router = new Router(reg, rConf.title, rConf.block, rConf.router);
             var routerTree: Tree = new Tree(rootRouter);
             var nextMatchRouter: Router;
             rootCount++;
 
-            //traversal the router tree to find out the router matched
-            routerTree.traversal(function(router): any{
-                var defLoadRouter: any = win.wow.promise.defer();
-                var routerReg: RegExp = router.getUrlReg();
-                var regResult: string[] = routerReg.exec(url);
+            if (_this.currentRenderUrl === url){
+                //traversal the router tree to find out the router matched
+                routerTree.traversal(function(router): any{
+                    var defLoadRouter: any = win.wow.promise.defer();
+                    var routerReg: RegExp = router.getUrlReg();
+                    var regResult: string[] = routerReg.exec(url);
 
-                if (regResult && typeof regResult[0] !== 'undefined'){
-                    if (nextMatchRouter){
-                        if (!nextMatchRouter.equal(router)){
-                            return true;
+                    if (_this.currentRenderUrl !== url) {
+                        if (!isRejected) {
+                            deferred.reject(ErrorController.getError(ErrorType.ROUTER_MATCHING_STOPPED));
+                            isRejected = true;
                         }
-                        else{
-                            nextMatchRouter = null;
-                        }
-                    } else{    //find the next leaf which to need to search
-                        var childRouters: Router[] = router.getChildrenNods();
-                        util.lang.arrayForEach(childRouters, function(router){
-                            var routerUrlReg = router.getUrlReg(),
-                                regChildResult = routerUrlReg.exec(url);
-                            if (regChildResult && typeof regChildResult[0] !== 'undefined'){
-                                nextMatchRouter = router;
+                        return true;
+                    }
+
+                    if (regResult && typeof regResult[0] !== 'undefined'){
+                        if (nextMatchRouter){
+                            if (!nextMatchRouter.equal(router)){
+                                return true;
                             }
-                        });
+                            else{
+                                nextMatchRouter = null;
+                            }
+                        } else{    //find the next leaf which to need to search
+                            var childRouters: Router[] = router.getChildrenNods();
+                            util.lang.arrayForEach(childRouters, function(router){
+                                var routerUrlReg = router.getUrlReg(),
+                                    regChildResult = routerUrlReg.exec(url);
+                                if (regChildResult && typeof regChildResult[0] !== 'undefined'){
+                                    nextMatchRouter = router;
+                                }
+                            });
 
-                        if (!nextMatchRouter && childRouters.length){
-                            return true;
+                            if (!nextMatchRouter && childRouters.length){
+                                return true;
+                            }
                         }
-                    }
-                    //this router node is what i want
-                    _this.currentRouterPath.push(router);
-                    var urlkeys: string[] = router.getUrlKeys();
-                    util.lang.arrayForEach(urlkeys, function(urlKey, index){
-                        _this.routerParams[urlKey] = regResult[index + 1];
-                    });
-
-                    if (typeof router.blocks === 'string'){  //the block need to require from server
-                        util.lang._require([router.blocks]).then(function(mods: any){
-                            var childRouterConf: any = mods[0];
-                            router.setBlocks(childRouterConf.block);
-                            router.setChildrenRouters(childRouterConf.router);
-                            defLoadRouter.resolve();
+                        //this router node is what i want
+                        _this.currentRouterPath.push(router);
+                        var urlkeys: string[] = router.getUrlKeys();
+                        util.lang.arrayForEach(urlkeys, function(urlKey, index){
+                            _this.routerParams[urlKey] = regResult[index + 1];
                         });
-                    } else{
-                        defLoadRouter.resolve();
+
+                        if (typeof router.blocks === 'string'){  //the block need to require from server
+                            util.lang._require([router.blocks]).then(function(mods: any){
+                                var childRouterConf: any = mods[0];
+                                router.setBlocks(childRouterConf.block);
+                                router.setChildrenRouters(childRouterConf.router);
+                                defLoadRouter.resolve();
+                            });
+                        } else{
+                            defLoadRouter.resolve();
+                        }
+                    } else {
+                        //stop matching this leaf and going on
+                        return true;
                     }
-                } else {
-                    //stop matching this leaf and going on
-                    return true;
-                }
-                return defLoadRouter.promise;
-            }).done(function(){
-                if (++rootRouterDoneCount > rootCount){
-                    deferred.resolve();
-                }
-            });
+                    return defLoadRouter.promise;
+                }).then(function(){
+                    if (++rootRouterDoneCount > rootCount){
+                        deferred.resolve();
+                    }
+                });
+            }
         });
 
         return deferred.promise;
@@ -184,10 +198,12 @@ class RouterMatcher{
      * @returns {Promise}
      */
     public match(url: string): any{
-        var deferred: any = win.wow.promise.defer();
         var _this: RouterMatcher = this;
+
+        var deferred: any = win.wow.promise.defer();
         var blockTreeRoots: Block[] = [];
 
+        _this.currentRenderUrl = url;
         _this.routerMatch(url).done(function(){
             var currentRouterPath = _this.currentRouterPath;
             if (!currentRouterPath.length){

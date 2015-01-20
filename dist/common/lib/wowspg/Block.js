@@ -281,7 +281,10 @@ define(["require", "exports", './utils', './HistoryStack', './DSGetter', './Erro
                 if (typeof _blockDs === 'string' && _blockDs === _thisDs) {
                     _isEqual = true;
                 }
-                else if (typeof _blockDs === 'object' && typeof _thisDs === 'object') {
+                else if (!_blockDs && !_thisDs) {
+                    _isEqual = true;
+                }
+                else if (_blockDs && typeof _blockDs === 'object' && _thisDs && typeof _thisDs === 'object') {
                     _isEqual = true;
                     util.lang.objForIn(_blockDs, function (blockInfo, blockKey) {
                         if (blockInfo != _thisDs[name]) {

@@ -46,7 +46,7 @@ class Tree{
                 else{
                     var compLen: number = 1;
                     util.lang.arrayForEach(childrenNodes, function(childNode, index){
-                        _this.dfTraversalNode(childNode, callback).done(function(){
+                        _this.dfTraversalNode(childNode, callback).then(function(){
                             if (++compLen > nodeLen){
                                 //children nodes are all done
                                 deferred.resolve();

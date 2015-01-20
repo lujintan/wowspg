@@ -89,7 +89,7 @@ module wow {
     }
 
     export function go(url, hisCtrl?: string): void{
-        var renderUrl = util.cus.getRenderUrl(url, wowOption.getBaseUrl());
+        var renderUrl: string = util.cus.getRenderUrl(url, wowOption.getBaseUrl());
 
         if (!renderUrl){
             win.wow.eventTrigger(win, 'wow.page.change', {
@@ -98,9 +98,7 @@ module wow {
             });
             return;
         }
-        win.wow.eventTrigger(win, 'wow.page.change', {
-            url: renderUrl
-        });
+
         DSGetter.cancelAll();
         routerMatcher.match(renderUrl).then(function(blockRoots: Block[]){
             if (hisCtrl === 'replace'){
@@ -124,6 +122,10 @@ module wow {
                 error: errInfo,
                 url: renderUrl
             });
+        });
+
+        win.wow.eventTrigger(win, 'wow.page.change', {
+            url: renderUrl
         });
     }
 }

@@ -8,6 +8,7 @@ import util = require('./utils');
  */
 export enum ErrorType{
     CONFIG_ERROR = 101,
+    ROUTER_MATCHING_STOPPED = 102,
     TIMEOUT_ERROR = 202,
     BLOCK_ERROR = 303,
     BLOCK_SELECTOR_IS_EMPTY = 310,
@@ -52,6 +53,7 @@ export class ErrorController{
      */
     private static ErrorList: ErrorInfo[] = [
         new ErrorInfo(ErrorType.CONFIG_ERROR,                       'Config is error!'),
+        new ErrorInfo(ErrorType.ROUTER_MATCHING_STOPPED,            'Router matching has stopped!'),
         new ErrorInfo(ErrorType.TIMEOUT_ERROR,                      'Page load timeout!'),
         new ErrorInfo(ErrorType.BLOCK_ERROR,                        'Block render error!'),
         new ErrorInfo(ErrorType.BLOCK_SELECTOR_IS_EMPTY,            'Block\'s selector is empty!'),

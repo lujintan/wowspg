@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/output/DSGetter.js" />
+        <item url="file://$PROJECT_DIR$/output/Block.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/output/main.js" />
+      <root url="file://$PROJECT_DIR$/output/RouterMatcher.js" />
+      <root url="file://$PROJECT_DIR$/output/main.js" />
+      <root url="file://$PROJECT_DIR$/output/RouterMatcher.js" />
+      <root url="file://$PROJECT_DIR$/output/Block.js" />
+      <root url="file://$PROJECT_DIR$/output/Block.js" />
+      <root url="file://$PROJECT_DIR$/output/DSGetter.js" />
+      <root url="file://$PROJECT_DIR$/output/Block.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>
