@@ -395,6 +395,38 @@ $(window).bind('wow.page.change', function(e, data){
     </tr>
 </table>
 
+### wow.block.render
+
+以jQuery作为基础库举例
+
+```javascript
+$(window).bind('wow.block.render', function(e, data){
+    console.log(data);
+});
+```
+
+当页面切换完成时触发，事件返回data参数描述：
+
+<table>
+    <tr>
+        <td>参数</td><td>类型</td><td>说明</td>
+    </tr>
+    <tr>
+        <td>block</td><td>object</td>
+        <td>
+            切换的block的信息<br>
+            {
+                name: block名字
+                selector: 父级selector,
+                container: 父级dom元素
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>progress</td><td>object</td><td>某一个block的渲染的进度</td>
+    </tr>
+</table>
+
 ##wowspg 错误处理
 
 wowspg的错误都发生在页面切换阶段，开发人员可以通过绑定wow.page.change事件进行错误监听。

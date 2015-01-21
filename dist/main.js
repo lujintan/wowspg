@@ -903,6 +903,13 @@ define('common/lib/wowspg/Block',["require", "exports", './utils', './HistorySta
     var win = decl.win;
     var ErrorType = err.ErrorType;
     var ErrorController = err.ErrorController;
+    var RendertStatus;
+    (function (RendertStatus) {
+        RendertStatus[RendertStatus["START"] = 0] = "START";
+        RendertStatus[RendertStatus["RENDER_READY"] = 50] = "RENDER_READY";
+        RendertStatus[RendertStatus["READY_HANDLER_READY"] = 80] = "READY_HANDLER_READY";
+        RendertStatus[RendertStatus["USABLE_HANDLER_READY"] = 100] = "USABLE_HANDLER_READY";
+    })(RendertStatus || (RendertStatus = {}));
     /**
      * Block is pagelet of a page
      * A block can belongs to another as a child block
@@ -1046,6 +1053,11 @@ define('common/lib/wowspg/Block',["require", "exports", './utils', './HistorySta
                 return;
             }
             _this.requireIng = true;
+            var blockInfo = {
+                name: _this.name,
+                selector: _this.selector,
+                container: _this.container
+            };
             //require start resources
             util.lang._require(requireList).then(function (mods) {
                 _this.requireIng = false;
@@ -1055,11 +1067,21 @@ define('common/lib/wowspg/Block',["require", "exports", './utils', './HistorySta
                     defered.resolve();
                 });
             }).then(function (mods) {
+                //trigger event for block render ready
+                win.wow.eventTrigger(win, 'wow.block.render', {
+                    block: blockInfo,
+                    progress: 50 /* RENDER_READY */
+                });
                 //require ready resources
                 return util.lang._require(_this.readyHandlers);
             }).then(function (mods) {
                 //init ready handlers
                 _this.initBlockHandlers(mods);
+                //trigger event for block ready handler executed
+                win.wow.eventTrigger(win, 'wow.block.render', {
+                    block: blockInfo,
+                    progress: 80 /* READY_HANDLER_READY */
+                });
                 defered.resolve();
             }).then(function (mods) {
                 //require usable resources
@@ -1067,6 +1089,11 @@ define('common/lib/wowspg/Block',["require", "exports", './utils', './HistorySta
             }).then(function (mods) {
                 //init usable handlers
                 _this.initBlockHandlers(mods);
+                //trigger event for block usable handler executed
+                win.wow.eventTrigger(win, 'wow.block.render', {
+                    block: blockInfo,
+                    progress: 100 /* USABLE_HANDLER_READY */
+                });
                 defered.resolve();
             }, function (err) {
                 if (err.code !== 506 /* RUNTIME_ERROR_RESOURCE_UNREADY */) {
@@ -1120,6 +1147,14 @@ define('common/lib/wowspg/Block',["require", "exports", './utils', './HistorySta
                                 requireList.push('css!' + cssSource);
                             });
                         }
+                        win.wow.eventTrigger(win, 'wow.block.render', {
+                            block: {
+                                name: _this.name,
+                                selector: _this.selector,
+                                container: _this.container
+                            },
+                            progress: 0 /* START */
+                        });
                         //if the block's data has already exist in history then getting it from history
                         if (historyData && historyData[_blockName]) {
                             _this.ds = historyData[_blockName];

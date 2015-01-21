@@ -14,6 +14,13 @@ var win: any = decl.win;
 var ErrorType = err.ErrorType;
 var ErrorController = err.ErrorController;
 
+enum RendertStatus{
+    START = 0,
+    RENDER_READY = 50,
+    READY_HANDLER_READY = 80,
+    USABLE_HANDLER_READY = 100
+}
+
 /**
  * Block is pagelet of a page
  * A block can belongs to another as a child block
@@ -212,6 +219,13 @@ class Block{
             return;
         }
         _this.requireIng = true;
+
+        var blockInfo: Object = {
+            name: _this.name,
+            selector: _this.selector,
+            container: _this.container
+        };
+
         //require start resources
         util.lang._require(requireList).then(function(mods: any[]){
             _this.requireIng = false;
@@ -222,12 +236,25 @@ class Block{
                 defered.resolve();
             });
         }).then(function(mods: any[]): any{
+
+            //trigger event for block render ready
+            win.wow.eventTrigger(win, 'wow.block.render', {
+                block: blockInfo,
+                progress: RendertStatus.RENDER_READY
+            });
+
             //require ready resources
             return util.lang._require(_this.readyHandlers);
 
         }).then(function(mods: any[]){
             //init ready handlers
             _this.initBlockHandlers(mods);
+
+            //trigger event for block ready handler executed
+            win.wow.eventTrigger(win, 'wow.block.render', {
+                block: blockInfo,
+                progress: RendertStatus.READY_HANDLER_READY
+            });
             defered.resolve();
 
         }).then(function(mods: any[]): any{
@@ -237,6 +264,12 @@ class Block{
         }).then(function(mods: any[]){
             //init usable handlers
             _this.initBlockHandlers(mods);
+
+            //trigger event for block usable handler executed
+            win.wow.eventTrigger(win, 'wow.block.render', {
+                block: blockInfo,
+                progress: RendertStatus.USABLE_HANDLER_READY
+            });
             defered.resolve();
 
         }, function(err: any){
@@ -297,6 +330,15 @@ class Block{
                             requireList.push('css!' + cssSource);
                         });
                     }
+
+                    win.wow.eventTrigger(win, 'wow.block.render', {
+                        block: {
+                            name: _this.name,
+                            selector: _this.selector,
+                            container: _this.container
+                        },
+                        progress: RendertStatus.START
+                    });
 
                     //if the block's data has already exist in history then getting it from history
                     if (historyData && historyData[_blockName]){
